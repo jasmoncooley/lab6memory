@@ -160,26 +160,19 @@ void deallocate_memory(list_t * alloclist, list_t * freelist, int pid, int polic
     }
     
     // set the blk.pid back to 0
-    if (!prev){
-      alloclist->head = alloclist->head->next;
-      deallocate_blk = curr->blk;
-    }
-    else{
-      prev->next = curr->next;
-      deallocate_blk = curr->blk;
-    }
-    deallocate_blk->pid = 0;
-
-    // Add the blk back to the FREE_LIST based on policy. 
-    if (policy == 1){
-      list_add_to_back(freelist, deallocate_blk);
-    }
-    else if (policy == 2){
-      list_add_ascending_by_blocksize(freelist, deallocate_blk);
-    }
-    else if (policy == 3){
-      list_add_descending_by_blocksize(freelist, deallocate_blk);
-    }
+   blk.pid = 0;
+	//4
+	switch (policy) {
+		case 1: //FIFO
+			list_add_to_back(freelist, blk);
+			break;
+		case 2: //BESTFIT
+			list_add_ascending_by_blocksize(freelist, blk);
+			break;
+		case 3: // WORSTFIT
+			list_add_descending_by_blocksize(freelist, blk);
+			break;
+	}
 }
 
 list_t* coalese_memory(list_t * list){
